@@ -1,9 +1,9 @@
-// resample-jpeg/src/convolve.js
+// image-processing-js/src/convolve.js
 
 'use strict';
 
-const fs = require('fs');
-const jpeg = require('jpeg-js');
+// const fs = require('fs');
+// const jpeg = require('jpeg-js');
 
 const gaussianBlurEngine = require('./gaussian-blur.js');
 
@@ -82,7 +82,8 @@ function convolve1D(dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, s
 	}
 }
 
-function convolveImageFromBuffer(srcImage, kernel) {
+function convolveImageFromBuffer(srcImage, sigma, kernelSize) {
+	const kernel = gaussianBlurEngine.generateKernel(sigma, kernelSize);
 	const bytesPerPixel = 4;	// Assume that the pixel format is RGBA.
 
 	const width = srcImage.width;
@@ -123,6 +124,7 @@ function convolveImageFromBuffer(srcImage, kernel) {
 	};
 }
 
+/*
 // function driver(sigma, kernelSize) {
 function driver() {
 	const sigma = 1.0;
@@ -148,6 +150,7 @@ function driver() {
 
 // driver(1.0, 5);
 driver();
+*/
 
 module.exports = {
 	convolveImageFromBuffer: convolveImageFromBuffer

@@ -1,4 +1,4 @@
-// resample-jpeg/src/gaussian-blur.js
+// image-processing-js/src/gaussian-blur.js
 
 // Adapted from http://dev.theomader.com/gaussian-kernel-calculator/
 

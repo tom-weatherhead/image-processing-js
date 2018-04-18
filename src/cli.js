@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-// resample-jpeg/src/cli.js
+// image-processing-js/src/cli.js
 
 'use strict';
 
@@ -91,8 +91,14 @@ function justDoIt(argv) {
 	//mode = engine.modeBilinear;
 	//mode = engine.modeBicubic;
 	
-	console.log(`engine.resampleImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${dstWidth}, ${dstHeight}, ${dstQuality}, ${mode});`);
-	engine.resampleImageFromJpegFile(srcFilePath, dstFilePath, dstWidth, dstHeight, dstQuality, mode);
+	const sigma = 1.0;
+	const kernelSize = 5;
+
+	console.log(`engine.convolveImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${sigma}, ${kernelSize}, ${dstQuality});`);
+	engine.convolveImageFromJpegFile(srcFilePath, dstFilePath, sigma, kernelSize, dstQuality);
+	
+	// console.log(`engine.resampleImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${dstWidth}, ${dstHeight}, ${dstQuality}, ${mode});`);
+	// engine.resampleImageFromJpegFile(srcFilePath, dstFilePath, dstWidth, dstHeight, dstQuality, mode);
 }
 
 // console.log(process.argv);

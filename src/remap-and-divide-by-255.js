@@ -1,4 +1,4 @@
-// src/remap-and-divide-by-255.js
+// image-processing-js/src/remap-and-divide-by-255.js
 
 // The essence of dividend remapping is this:
 // Map integer x from the range [0 ... 255 * 255] to the range [0 ... 255 * 256 - 1].
