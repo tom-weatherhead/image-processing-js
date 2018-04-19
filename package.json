@@ -12,8 +12,11 @@
     "url": "https://github.com/tom-weatherhead/image-processing-js/issues"
   },
   "scripts": {
+    "lint": "grunt eslint",
+    "mocha": "grunt mochaTest",
+    "nsp": "grunt nsp",
     "start": "node src/cli.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt"
   },
   "bin": {
     "resample-jpeg": "src/cli.js"
@@ -31,5 +34,10 @@
     "name": "Tom Weatherhead",
     "url": "https://github.com/tom-weatherhead"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^1.0.2",
+    "grunt-eslint": "^20.1.0",
+    "grunt-nsp": "^2.3.1"
+  }
 }

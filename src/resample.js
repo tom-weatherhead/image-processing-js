@@ -48,21 +48,21 @@ const modeNearestNeighbour = 0;
 const modeBilinear = 1;
 const modeBicubic = 2;
 
-function resample1DNearestNeighbour(dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, srcBuffer, srcInitialOffset, numSrcPixels, srcPixelStride, numBytesPerPixel) {
+function resample1DNearestNeighbour (dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, srcBuffer, srcInitialOffset, numSrcPixels, srcPixelStride, numBytesPerPixel) {
 	let accumulator = 0;
 
 	for (let dstPixelIndex = 0; dstPixelIndex < numDstPixels; dstPixelIndex++) {
-		const srcPixelIndex = (Math.trunc(accumulator / numDstPixels) * srcPixelStride) + srcInitialOffset;		// We need a truncating integer division operator.
+		const srcPixelIndex = Math.trunc(accumulator / numDstPixels) * srcPixelStride + srcInitialOffset;	// We need a truncating integer division operator.
 
 		switch (numBytesPerPixel) {
 			case 4:
 				dstBuffer[dstInitialOffset + 3] = srcBuffer[srcPixelIndex + 3];
-			case 3:
+			case 3:			// eslint-disable-line
 				dstBuffer[dstInitialOffset + 2] = srcBuffer[srcPixelIndex + 2];
 				dstBuffer[dstInitialOffset + 1] = srcBuffer[srcPixelIndex + 1];
-			case 1:
+			case 1:			// eslint-disable-line
 				dstBuffer[dstInitialOffset] = srcBuffer[srcPixelIndex];
-			default:
+			default:		// eslint-disable-line
 				break;
 		}
 
@@ -71,40 +71,40 @@ function resample1DNearestNeighbour(dstBuffer, dstInitialOffset, numDstPixels, d
 	}
 }
 
-function resample1DBilinear(dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, srcBuffer, srcInitialOffset, numSrcPixels, srcPixelStride, numBytesPerPixel) {
+function resample1DBilinear (dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, srcBuffer, srcInitialOffset, numSrcPixels, srcPixelStride, numBytesPerPixel) {
 	let accumulator = 0;
 
 	for (let dstPixelIndex = 0; dstPixelIndex < numDstPixels; dstPixelIndex++) {
 		const srcPixelIndexInRun = Math.trunc(accumulator / numDstPixels);
-		const srcPixelIndex = (srcPixelIndexInRun * srcPixelStride) + srcInitialOffset;		// We need a truncating integer division operator.
+		const srcPixelIndex = srcPixelIndexInRun * srcPixelStride + srcInitialOffset;		// We need a truncating integer division operator.
 
 		if (srcPixelIndexInRun >= numSrcPixels - 1) {
 			switch (numBytesPerPixel) {
 				case 4:
 					dstBuffer[dstInitialOffset + 3] = srcBuffer[srcPixelIndex + 3];
-				case 3:
+				case 3:		// eslint-disable-line
 					dstBuffer[dstInitialOffset + 2] = srcBuffer[srcPixelIndex + 2];
 					dstBuffer[dstInitialOffset + 1] = srcBuffer[srcPixelIndex + 1];
-				case 1:
+				case 1:		// eslint-disable-line
 					dstBuffer[dstInitialOffset] = srcBuffer[srcPixelIndex];
-				default:
+				default:	// eslint-disable-line
 					break;
 			}
 		} else {
-			const srcPixelIndex2 = ((srcPixelIndexInRun + 1) * srcPixelStride) + srcInitialOffset;		// We need a truncating integer division operator.
+			const srcPixelIndex2 = (srcPixelIndexInRun + 1) * srcPixelStride + srcInitialOffset;		// We need a truncating integer division operator.
 			const remainder = accumulator - srcPixelIndexInRun * numDstPixels;
 			const weight1 = numDstPixels - remainder;
 			const weight2 = remainder;
-			
+
 			switch (numBytesPerPixel) {
 				case 4:
 					dstBuffer[dstInitialOffset + 3] = (srcBuffer[srcPixelIndex + 3] * weight1 + srcBuffer[srcPixelIndex2 + 3] * weight2) / numDstPixels;
-				case 3:
+				case 3:		// eslint-disable-line
 					dstBuffer[dstInitialOffset + 2] = (srcBuffer[srcPixelIndex + 2] * weight1 + srcBuffer[srcPixelIndex2 + 2] * weight2) / numDstPixels;
 					dstBuffer[dstInitialOffset + 1] = (srcBuffer[srcPixelIndex + 1] * weight1 + srcBuffer[srcPixelIndex2 + 1] * weight2) / numDstPixels;
-				case 1:
+				case 1:		// eslint-disable-line
 					dstBuffer[dstInitialOffset] = (srcBuffer[srcPixelIndex] * weight1 + srcBuffer[srcPixelIndex2] * weight2) / numDstPixels;
-				default:
+				default:	// eslint-disable-line
 					break;
 			}
 		}
@@ -114,16 +114,17 @@ function resample1DBilinear(dstBuffer, dstInitialOffset, numDstPixels, dstPixelS
 	}
 }
 
-function generateCubicWeightFunction(B, C) {
+function generateCubicWeightFunction (B, C) {
 	return x => {
 		x = Math.abs(x);
-		
+
 		if (x < 1) {
 			// k(x) = (1/6) * (12 - 9B - 6C) * |x|^3 + (-18 + 12B + 6C) * |x|^2                      + (6 - 2B)			if |x| < 1
 			return (((12 - 9 * B - 6 * C) * x + (-18 + 12 * B + 6 * C)) * x * x + 6 - 2 * B) / 6;
 		} else if (x < 2) {
 			// k(x) = (1/6) * (-B - 6C)      * |x|^3 + (6B + 30C)       * |x|^2 + (-12B - 48C) * |x| + (8B + 24C)		if 1 <= |x| < 2
-			return (((((-B - 6 * C) * x) + (6 * B + 30 * C) * x) - (12 * B + 48 * C) * x) + 8 * B + 24 * C) / 6;
+			//return (((((-B - 6 * C) * x) + (6 * B + 30 * C) * x) - (12 * B + 48 * C) * x) + 8 * B + 24 * C) / 6;
+			return ((-B - 6 * C) * x + (6 * B + 30 * C) * x - (12 * B + 48 * C) * x + 8 * B + 24 * C) / 6;
 		} else {
 			// k(x) = 0																									otherwise
 			return 0;
@@ -135,7 +136,7 @@ function generateCubicWeightFunction(B, C) {
 // const getBicubicWeight = generateCubicWeightFunction(1 / 3, 1 / 3);		// Mitchell
 const getBicubicWeight = generateCubicWeightFunction(0, 0.5);				// Catmull-Rom
 
-function resample1DBicubic(dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, srcBuffer, srcInitialOffset, numSrcPixels, srcPixelStride, numBytesPerPixel) {
+function resample1DBicubic (dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, srcBuffer, srcInitialOffset, numSrcPixels, srcPixelStride, numBytesPerPixel) {
 	let dstPixelOffsetInBuffer = dstInitialOffset;
 	let accumulator = 0;
 
@@ -149,39 +150,39 @@ function resample1DBicubic(dstBuffer, dstInitialOffset, numDstPixels, dstPixelSt
 		let accumulator1 = 0;
 		let accumulator0 = 0;
 		let totalWeight = 0;
-		let srcPixelOffsetInBuffer = (firstSrcPixelIndex * srcPixelStride) + srcInitialOffset;		// We need a truncating integer division operator.
+		let srcPixelOffsetInBuffer = firstSrcPixelIndex * srcPixelStride + srcInitialOffset;		// We need a truncating integer division operator.
 
 		for (let srcPixelIndexInRun = firstSrcPixelIndex; srcPixelIndexInRun <= lastSrcPixelIndex; srcPixelIndexInRun++) {
 			//const srcPixelWeight = getBicubicWeight(srcPixelIndexInRun - dstPixelIndexInSrcSpace);
 			const srcPixelWeight = getBicubicWeight((srcPixelIndex - dstPixelIndexInSrcSpace) * numDstPixels / numSrcPixels);
-			
+
 			switch (numBytesPerPixel) {
 				case 4:
 					accumulator3 += srcBuffer[srcPixelOffsetInBuffer + 3] * srcPixelWeight;
-				case 3:
+				case 3:		// eslint-disable-line
 					accumulator2 += srcBuffer[srcPixelOffsetInBuffer + 2] * srcPixelWeight;
 					accumulator1 += srcBuffer[srcPixelOffsetInBuffer + 1] * srcPixelWeight;
-				case 1:
+				case 1:		// eslint-disable-line
 					accumulator0 += srcBuffer[srcPixelOffsetInBuffer + 0] * srcPixelWeight;
-				default:
+				default:	// eslint-disable-line
 					break;
 			}
 
 			totalWeight += srcPixelWeight;
 			srcPixelOffsetInBuffer += srcPixelStride;
 		}
-		
+
 		if (totalWeight > 0) {
 
 			switch (numBytesPerPixel) {
 				case 4:
 					dstBuffer[dstPixelOffsetInBuffer + 3] = accumulator3 / totalWeight; // Or * inverseOfTotalWeight;
-				case 3:
+				case 3:		// eslint-disable-line
 					dstBuffer[dstPixelOffsetInBuffer + 2] = accumulator2 / totalWeight;
 					dstBuffer[dstPixelOffsetInBuffer + 1] = accumulator1 / totalWeight;
-				case 1:
+				case 1:		// eslint-disable-line
 					dstBuffer[dstPixelOffsetInBuffer + 0] = accumulator0 / totalWeight;
-				default:
+				default:	// eslint-disable-line
 					break;
 			}
 		} else {
@@ -189,48 +190,53 @@ function resample1DBicubic(dstBuffer, dstInitialOffset, numDstPixels, dstPixelSt
 			switch (numBytesPerPixel) {
 				case 4:
 					dstBuffer[dstPixelOffsetInBuffer + 3] = 0;
-				case 3:
+				case 3:		// eslint-disable-line
 					dstBuffer[dstPixelOffsetInBuffer + 2] = 0;
 					dstBuffer[dstPixelOffsetInBuffer + 1] = 0;
-				case 1:
+				case 1:		// eslint-disable-line
 					dstBuffer[dstPixelOffsetInBuffer + 0] = 0;
-				default:
+				default:	// eslint-disable-line
 					break;
 			}
 		}
-			
+
 		dstPixelOffsetInBuffer += dstPixelStride;
 		accumulator += numSrcPixels;
 	}
 }
 
-function get1DResamplingFunction(mode) {
-	
+function get1DResamplingFunction (mode) {
+
 	switch (mode) {
 		// case modeNearestNeighbour:		return resample1DNearestNeighbour;
 		// case modeBilinear:				return resample1DBilinear;
 		// case resample1DBicubic:			return resample1DBicubic;
 		case modeNearestNeighbour:
 			console.log('modeNearestNeighbour');
+
 			return resample1DNearestNeighbour;
-			
+
 		case modeBilinear:
 			console.log('modeBilinear');
+
 			return resample1DBilinear;
-		
+
 		case modeBicubic:
 			console.log('resample1DBicubic');
+
 			return resample1DBicubic;
 
-		default:						return undefined;
+		default:
+			return undefined;
 	}
 }
 
-function resampleImageFromBuffer(srcImage, dstWidth, dstHeight, mode) {
+function resampleImageFromBuffer (srcImage, dstWidth, dstHeight, mode) {
 	const fn1DResamplingFunction = get1DResamplingFunction(mode);
-	
+
 	if (!fn1DResamplingFunction) {
 		console.error('No resampling function for mode', mode);
+
 		return undefined;
 	}
 
@@ -248,19 +254,19 @@ function resampleImageFromBuffer(srcImage, dstWidth, dstHeight, mode) {
 
 	const dstBytesPerLine = intermediateBytesPerLine;
 	const dstBuffer = Buffer.alloc(dstHeight * dstBytesPerLine);
-	
+
 	// 1) Resample horizontally from srcBuffer to intermediateBuffer
-	
+
 	for (let row = 0; row < srcHeight; row++) {
 		fn1DResamplingFunction(intermediateBuffer, row * intermediateBytesPerLine, intermediateWidth, numBytesPerPixel, srcBuffer, row * srcBytesPerLine, srcWidth, numBytesPerPixel, numBytesPerPixel);
 	}
-	
+
 	// 2) Resample vertically from intermediateBuffer to dstBuffer
-	
+
 	for (let col = 0; col < intermediateWidth; col++) {
 		fn1DResamplingFunction(dstBuffer, col * numBytesPerPixel, dstHeight, dstBytesPerLine, intermediateBuffer, col * numBytesPerPixel, intermediateHeight, intermediateBytesPerLine, numBytesPerPixel);
 	}
-	
+
 	return {
 		width: dstWidth,
 		height: dstHeight,
@@ -292,7 +298,7 @@ function resampleInContext1DBicubic(
 	numSrcPixels,		// We can safely read the src pixels with indices 0 <= i < numSrcPixels
 	srcContextStart, srcContextLength,
 	numBytesPerPixel) {
-		
+
 	let accumulator = (dstRegionToRenderStart - dstContextStart) * srcContextLength;
 
 	dstPixelOffsetInBuffer += dstRegionToRenderStart * dstPixelStride;
@@ -312,7 +318,7 @@ function resampleInContext1DBicubic(
 		for (let srcPixelIndexInRun = firstSrcPixelIndex; srcPixelIndexInRun <= lastSrcPixelIndex; srcPixelIndexInRun++) {
 			//const srcPixelWeight = getBicubicWeight(srcPixelIndexInRun - dstPixelIndexInSrcSpace);
 			const srcPixelWeight = getBicubicWeight((srcPixelIndexInRun - dstPixelIndexInSrcSpace) * dstContextLength / srcContextLength);
-			
+
 			switch (numBytesPerPixel) {
 				case 4:
 					accumulator3 += srcBuffer[srcPixelOffsetInBuffer + 3] * srcPixelWeight;
@@ -328,7 +334,7 @@ function resampleInContext1DBicubic(
 			totalWeight += srcPixelWeight;
 			srcPixelOffsetInBuffer += srcPixelStride;
 		}
-		
+
 		if (totalWeight > 0) {
 
 			switch (numBytesPerPixel) {
@@ -356,7 +362,7 @@ function resampleInContext1DBicubic(
 					break;
 			}
 		}
-			
+
 		dstPixelOffsetInBuffer += dstPixelStride;
 		accumulator += numSrcPixels;
 	}
@@ -370,12 +376,12 @@ function resampleImageInContextFromBuffer(
 	dstRegionToRenderLeft, dstRegionToRenderWidth, dstRegionToRenderBottom (or Top?), dstRegionToRenderHeight,
 	dstContextLeft, dstContextWidth, dstContextBottom (or Top?), dstContextHeight,
 	mode) {
-	
+
 	// **** The code below this line has not yet been modified ****
 
 	const fn1DResamplingFunction = resampleInContext1DBicubic;
 	// const fn1DResamplingFunction = get1DResamplingFunction(mode);
-	
+
 	// if (!fn1DResamplingFunction) {
 		// console.error('No resampling function for mode', mode);
 		// return undefined;
@@ -397,9 +403,9 @@ function resampleImageInContextFromBuffer(
 	const dstBuffer = Buffer.alloc(dstHeight * dstBytesPerLine);
 
 	// TODO TomW 2018-04-14 : Decide what the intermediate image is supposed to contain when we are stretching in context. I.e. The first for loop below probably shouldn't be using srcHeight; instead, only use as much of the src image as we will need.
-	
+
 	// 1) Resample horizontally from srcBuffer to intermediateBuffer
-	
+
 	for (let row = 0; row < srcHeight; row++) {
 		fn1DResamplingFunction(
 			intermediateBuffer,
@@ -416,9 +422,9 @@ function resampleImageInContextFromBuffer(
 
 		// intermediateBuffer, row * intermediateBytesPerLine, intermediateWidth, numBytesPerPixel, srcBuffer, row * srcBytesPerLine, srcWidth, numBytesPerPixel, numBytesPerPixel);
 	}
-	
+
 	// 2) Resample vertically from intermediateBuffer to dstBuffer
-	
+
 	for (let col = 0; col < intermediateWidth; col++) {
 		fn1DResamplingFunction(
 			dstBuffer,
@@ -435,7 +441,7 @@ function resampleImageInContextFromBuffer(
 
 			// dstBuffer, col * numBytesPerPixel, dstHeight, dstBytesPerLine, intermediateBuffer, col * numBytesPerPixel, intermediateHeight, intermediateBytesPerLine, numBytesPerPixel);
 	}
-	
+
 	return {
 		width: dstWidth,
 		height: dstHeight,

@@ -24,11 +24,15 @@ const engine = require('..');
 //	return Math.trunc((x + x / 256 + ?) / 256);
 //} ???
 
-function justDoIt(argv) {
-	let srcFilePath = undefined;
-	let dstFilePath = undefined;
-	let defaultSrcFilePath = 'test/images/unconventional-table.jpg';
-	let defaultDstFilePath = 'foo.jpg';
+//const defaultSrcFilePath = 'test/images/unconventional-table.jpg';
+const defaultSrcFilePath = 'test/images/fast-and-fourier.jpg';
+const defaultDstFilePath = 'test-output/foo.jpg';
+
+function justDoIt (argv) {
+	let srcFilePath; // = undefined;
+	let dstFilePath; // = undefined;
+	//let defaultSrcFilePath = 'test/images/unconventional-table.jpg';
+	//let defaultDstFilePath = 'test-output/foo.jpg';
 	let dstWidth = 0;
 	let dstHeight = 0;
 	let dstQuality = 50;
@@ -39,10 +43,10 @@ function justDoIt(argv) {
 
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
-		const thereIsANextArg = i < argv.length - 1;
-		
+		//const thereIsANextArg = i < argv.length - 1;
+
 		if (arg.substr(0, 1) !== '-') {
-			
+
 			if (!srcFilePath) {
 				srcFilePath = arg;
 			} else if (!dstFilePath) {
@@ -71,11 +75,11 @@ function justDoIt(argv) {
 	if (!srcFilePath) {
 		srcFilePath = defaultSrcFilePath;
 	}
-	
+
 	if (!dstFilePath) {
 		dstFilePath = defaultDstFilePath;
 	}
-	
+
 	if (dstWidth !== dstWidth || dstWidth <= 0) {
 		dstWidth = defaultDstWidth;
 	}
@@ -87,20 +91,29 @@ function justDoIt(argv) {
 	if (dstHeight !== dstHeight || dstHeight <= 0) {
 		dstHeight = defaultDstHeight;
 	}
-	
+
 	//mode = engine.modeBilinear;
-	//mode = engine.modeBicubic;
-	
+	mode = engine.modeBicubic;
+
 	const sigma = 1.0;
 	const kernelSize = 5;
 
-	console.log(`engine.convolveImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${sigma}, ${kernelSize}, ${dstQuality});`);
-	engine.convolveImageFromJpegFile(srcFilePath, dstFilePath, sigma, kernelSize, dstQuality);
-	
-	// console.log(`engine.resampleImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${dstWidth}, ${dstHeight}, ${dstQuality}, ${mode});`);
-	// engine.resampleImageFromJpegFile(srcFilePath, dstFilePath, dstWidth, dstHeight, dstQuality, mode);
+	// console.log(`engine.convolveImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${sigma}, ${kernelSize}, ${dstQuality});`);
+	// engine.convolveImageFromJpegFile(srcFilePath, dstFilePath, sigma, kernelSize, dstQuality);
+
+	console.log(`engine.resampleImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${dstWidth}, ${dstHeight}, ${mode}, ${dstQuality});`);
+	engine.resampleImageFromJpegFile(srcFilePath, dstFilePath, dstWidth, dstHeight, mode, dstQuality);
 }
 
 // console.log(process.argv);
 // console.log(process.argv.slice(2));
 justDoIt(process.argv.slice(2).filter(arg => arg !== '--'));
+
+// console.log('Seeing red.');
+// engine.mapColoursInImageFromJpegFile('test/images/unconventional-table.jpg', 'test-output/seeing-red.jpg', engine.seeingRedRGBA);
+
+// console.log('Desaturate.');
+// engine.mapColoursInImageFromJpegFile('test/images/unconventional-table.jpg', 'test-output/desaturate.jpg', engine.desaturateRGBA);
+
+// console.log('Flip.');
+// engine.flipImageFromJpegFile(defaultSrcFilePath, 'test-output/flip.jpg');
