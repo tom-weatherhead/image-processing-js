@@ -13,33 +13,120 @@ const engine = require('..');
 // -sl = Bilinear
 // -sc = Bicubic
 
-// Stretching in context?
-
-// Dividend remapping? : Uniformly map integers in the range [0, ..., 255 * 255] to the range [0, ..., 255 * 256 - 1].
-// 255 * 255 = 65025
-// 255 * 256 - 1 = 65279
-// -> f(x) = x + x/256 + 1 ? or x + x/256 ?
-// function remapDividendAndDivideBy255(x) {
-//	// Map [0, ..., 255 * 255] to the range [0, ..., 256 * 256 - 1], and then divide by 256.
-//	return Math.trunc((x + x / 256 + ?) / 256);
-//} ???
-
 //const defaultSrcFilePath = 'test/images/unconventional-table.jpg';
 const defaultSrcFilePath = 'test/images/fast-and-fourier.jpg';
-const defaultDstFilePath = 'test-output/foo.jpg';
 
-function justDoIt (argv) {
-	let srcFilePath; // = undefined;
-	let dstFilePath; // = undefined;
-	//let defaultSrcFilePath = 'test/images/unconventional-table.jpg';
-	//let defaultDstFilePath = 'test-output/foo.jpg';
+function dispatchDesaturate (argv) {
+	let srcFilePath = defaultSrcFilePath;
+	let dstFilePath = 'test-output/desaturate.jpg';
+
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+
+		if (arg.substr(0, 1) !== '-') {
+
+			if (!srcFilePath) {
+				srcFilePath = arg;
+			} else if (!dstFilePath) {
+				dstFilePath = arg;
+			}
+		}
+	}
+
+	// console.log('Seeing red.');
+	// engine.mapColoursInImageFromJpegFile('test/images/unconventional-table.jpg', 'test-output/seeing-red.jpg', engine.seeingRedRGBA);
+
+	console.log('Desaturate.');
+	engine.mapColoursInImageFromJpegFile(srcFilePath, dstFilePath, engine.desaturateRGBA);
+}
+
+function dispatchFlip (argv) {
+	let srcFilePath = defaultSrcFilePath;
+	let dstFilePath = 'test-output/flip.jpg';
+
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+
+		if (arg.substr(0, 1) !== '-') {
+
+			if (!srcFilePath) {
+				srcFilePath = arg;
+			} else if (!dstFilePath) {
+				dstFilePath = arg;
+			}
+		}
+	}
+
+	console.log('Flip.');
+	engine.flipImageFromJpegFile(srcFilePath, dstFilePath);
+}
+
+function dispatchGaussianBlur (argv) {
+	let srcFilePath = defaultSrcFilePath;
+	let dstFilePath = 'test-output/gaussian-blur.jpg';
+	let sigma = 1.0;
+	let kernelSize = 5;
+	let dstQuality;
+
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+		//const thereIsANextArg = i < argv.length - 1;
+
+		if (arg.substr(0, 1) !== '-') {
+
+			if (!srcFilePath) {
+				srcFilePath = arg;
+			} else if (!dstFilePath) {
+				dstFilePath = arg;
+			}
+		} else if (i < argv.length - 1) {
+			const nextArg = argv[i + 1];
+			i++;
+
+			if (arg === '-s') {
+				sigma = parseFloat(nextArg);
+			} else if (arg === '-ks') {
+				kernelSize = parseInt(nextArg);
+			} else if (arg === '-q') {
+				dstQuality = parseInt(nextArg);
+			}
+		}
+	}
+
+	console.log(`engine.convolveImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${sigma}, ${kernelSize}, ${dstQuality});`);
+	engine.convolveImageFromJpegFile(srcFilePath, dstFilePath, sigma, kernelSize, dstQuality);
+}
+
+function dispatchMirror (argv) {
+	let srcFilePath = defaultSrcFilePath;
+	let dstFilePath = 'test-output/mirror.jpg';
+
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+
+		if (arg.substr(0, 1) !== '-') {
+
+			if (!srcFilePath) {
+				srcFilePath = arg;
+			} else if (!dstFilePath) {
+				dstFilePath = arg;
+			}
+		}
+	}
+
+	console.log('Mirror.');
+	engine.mirrorImageFromJpegFile(srcFilePath, dstFilePath);
+}
+
+function dispatchResample (argv) {
+	let srcFilePath = defaultSrcFilePath;
+	let dstFilePath = 'test-output/resample.jpg';
 	let dstWidth = 0;
 	let dstHeight = 0;
-	let dstQuality = 50;
+	let dstQuality;
 	let defaultDstWidth = 640;
 	let defaultDstHeight = 480;
-	let defaultDstQuality = 50;
-	let mode = engine.modeNearestNeighbour;
+	let mode = engine.modeBicubic;
 
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
@@ -67,53 +154,58 @@ function justDoIt (argv) {
 			} else if (arg === '-h') {
 				dstHeight = parseInt(nextArg);
 			} else if (arg === '-q') {
-				dstQuality = parseInt(nextArg);	// TODO: Clamp to [0 ... 100]
+				dstQuality = parseInt(nextArg);
 			}
 		}
-	}
-
-	if (!srcFilePath) {
-		srcFilePath = defaultSrcFilePath;
-	}
-
-	if (!dstFilePath) {
-		dstFilePath = defaultDstFilePath;
 	}
 
 	if (dstWidth !== dstWidth || dstWidth <= 0) {
 		dstWidth = defaultDstWidth;
 	}
 
-	if (dstQuality !== dstQuality || dstQuality < 0 || dstQuality > 100) {
-		dstQuality = defaultDstQuality;
-	}
-
 	if (dstHeight !== dstHeight || dstHeight <= 0) {
 		dstHeight = defaultDstHeight;
 	}
-
-	//mode = engine.modeBilinear;
-	mode = engine.modeBicubic;
-
-	const sigma = 1.0;
-	const kernelSize = 5;
-
-	// console.log(`engine.convolveImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${sigma}, ${kernelSize}, ${dstQuality});`);
-	// engine.convolveImageFromJpegFile(srcFilePath, dstFilePath, sigma, kernelSize, dstQuality);
 
 	console.log(`engine.resampleImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${dstWidth}, ${dstHeight}, ${mode}, ${dstQuality});`);
 	engine.resampleImageFromJpegFile(srcFilePath, dstFilePath, dstWidth, dstHeight, mode, dstQuality);
 }
 
+function dispatch (argv) {
+	const command = argv.shift();
+
+	switch (command) {
+		case 'ds':
+			dispatchDesaturate(argv);
+			break;
+
+		case 'f':
+			dispatchFlip(argv);
+			break;
+
+		case 'gb':
+			dispatchGaussianBlur(argv);
+			break;
+
+		case 'm':
+			dispatchMirror(argv);
+			break;
+
+		case 'rs':
+			dispatchResample(argv);
+			break;
+
+		/*
+		case '':
+			break;
+		*/
+
+		default:
+			console.error('Unrecognized command:', command);
+			break;
+	}
+}
+
 // console.log(process.argv);
 // console.log(process.argv.slice(2));
-justDoIt(process.argv.slice(2).filter(arg => arg !== '--'));
-
-// console.log('Seeing red.');
-// engine.mapColoursInImageFromJpegFile('test/images/unconventional-table.jpg', 'test-output/seeing-red.jpg', engine.seeingRedRGBA);
-
-// console.log('Desaturate.');
-// engine.mapColoursInImageFromJpegFile('test/images/unconventional-table.jpg', 'test-output/desaturate.jpg', engine.desaturateRGBA);
-
-// console.log('Flip.');
-// engine.flipImageFromJpegFile(defaultSrcFilePath, 'test-output/flip.jpg');
+dispatch(process.argv.slice(2).filter(arg => arg !== '--'));

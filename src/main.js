@@ -10,6 +10,7 @@ const jpeg = require('jpeg-js');
 const convolve = require('./convolve.js');
 const flip = require('./flip.js');
 const mapColours = require('./map-colours.js');
+const mirror = require('./mirror.js');
 const resample = require('./resample.js');
 
 function loadImageFromJpegFile (srcFilePath) {
@@ -25,11 +26,11 @@ function loadImageFromJpegFile (srcFilePath) {
 
 function saveImageFromJpegFile (dstImage, dstFilePath, dstQuality) {
 	const defaultJpegQuality = 50;
-	
+
 	if (!dstImage) {
 		console.error('saveImageFromJpegFile() : Error: dstImage is', dstImage);
 	} else {
-		
+
 		if (dstQuality === undefined || dstQuality < 0 || dstQuality > 100) {
 			dstQuality = defaultJpegQuality;
 		} else {
@@ -46,11 +47,6 @@ function convolveImageFromJpegFile (srcFilePath, dstFilePath, sigma, kernelSize,
 	const srcImage = loadImageFromJpegFile(srcFilePath);
 	const dstImage = convolve.convolveImageFromBuffer(srcImage, sigma, kernelSize);
 
-	// if (dstImage) {
-		// const dstJpegData = jpeg.encode(dstImage, dstQuality);
-
-		// fs.writeFileSync(dstFilePath, dstJpegData.data);
-	// }
 	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
 }
 
@@ -61,27 +57,24 @@ function flipImageFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
 	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
 }
 
-function resampleImageFromJpegFile (srcFilePath, dstFilePath, dstWidth, dstHeight, mode, dstQuality) {
-	const srcImage = loadImageFromJpegFile(srcFilePath);
-	const dstImage = resample.resampleImageFromBuffer(srcImage, dstWidth, dstHeight, mode);
-
-	// if (dstImage) {
-		// const dstJpegData = jpeg.encode(dstImage, dstQuality);
-
-		// fs.writeFileSync(dstFilePath, dstJpegData.data);
-	// }
-	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
-}
-
 function mapColoursInImageFromJpegFile (srcFilePath, dstFilePath, fnMapColours, dstQuality) {
 	const srcImage = loadImageFromJpegFile(srcFilePath);
 	const dstImage = mapColours.mapColoursInImageFromBuffer(srcImage, fnMapColours);
 
-	// if (dstImage) {
-		// const dstJpegData = jpeg.encode(dstImage, dstQuality);
+	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
+}
 
-		// fs.writeFileSync(dstFilePath, dstJpegData.data);
-	// }
+function mirrorImageFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
+	const srcImage = loadImageFromJpegFile(srcFilePath);
+	const dstImage = mirror.mirrorImageFromBuffer(srcImage);
+
+	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
+}
+
+function resampleImageFromJpegFile (srcFilePath, dstFilePath, dstWidth, dstHeight, mode, dstQuality) {
+	const srcImage = loadImageFromJpegFile(srcFilePath);
+	const dstImage = resample.resampleImageFromBuffer(srcImage, dstWidth, dstHeight, mode);
+
 	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
 }
 
@@ -93,6 +86,9 @@ module.exports = {
 
 	flipImageFromBuffer: flip.flipImageFromBuffer,
 	flipImageFromJpegFile: flipImageFromJpegFile,
+
+	mirrorImageFromBuffer: mirror.mirrorImageFromBuffer,
+	mirrorImageFromJpegFile: mirrorImageFromJpegFile,
 
 	seeingRedRGBA: mapColours.seeingRedRGBA,
 	desaturateRGBA: mapColours.desaturateRGBA,
