@@ -93,7 +93,7 @@ function dispatchGaussianBlur (argv) {
 		}
 	}
 
-	console.log(`engine.convolveImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${sigma}, ${kernelSize}, ${dstQuality});`);
+	//console.log(`engine.convolveImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${sigma}, ${kernelSize}, ${dstQuality});`);
 	engine.convolveImageFromJpegFile(srcFilePath, dstFilePath, sigma, kernelSize, dstQuality);
 }
 
@@ -171,6 +171,64 @@ function dispatchResample (argv) {
 	engine.resampleImageFromJpegFile(srcFilePath, dstFilePath, dstWidth, dstHeight, mode, dstQuality);
 }
 
+function dispatchRotate90DegreesClockwise (argv) {
+	let srcFilePath = defaultSrcFilePath;
+	let dstFilePath = 'test-output/rotate90cw.jpg';
+	let dstQuality;
+
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+
+		if (arg.substr(0, 1) !== '-') {
+
+			if (!srcFilePath) {
+				srcFilePath = arg;
+			} else if (!dstFilePath) {
+				dstFilePath = arg;
+			}
+		} else if (i < argv.length - 1) {
+			const nextArg = argv[i + 1];
+			i++;
+
+			if (arg === '-q') {
+				dstQuality = parseInt(nextArg);
+			}
+		}
+	}
+
+	console.log('Rotate 90 degrees clockwise.');
+	engine.rotate90DegreesClockwiseFromJpegFile(srcFilePath, dstFilePath, dstQuality);
+}
+
+function dispatchRotate90DegreesCounterclockwise (argv) {
+	let srcFilePath = defaultSrcFilePath;
+	let dstFilePath = 'test-output/rotate90ccw.jpg';
+	let dstQuality;
+
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+
+		if (arg.substr(0, 1) !== '-') {
+
+			if (!srcFilePath) {
+				srcFilePath = arg;
+			} else if (!dstFilePath) {
+				dstFilePath = arg;
+			}
+		} else if (i < argv.length - 1) {
+			const nextArg = argv[i + 1];
+			i++;
+
+			if (arg === '-q') {
+				dstQuality = parseInt(nextArg);
+			}
+		}
+	}
+
+	console.log('Rotate 90 degrees counter-clockwise.');
+	engine.rotate90DegreesCounterclockwiseFromJpegFile(srcFilePath, dstFilePath, dstQuality);
+}
+
 function dispatch (argv) {
 	const command = argv.shift();
 
@@ -193,6 +251,14 @@ function dispatch (argv) {
 
 		case 'rs':
 			dispatchResample(argv);
+			break;
+
+		case 'r90ccw':
+			dispatchRotate90DegreesCounterclockwise(argv);
+			break;
+
+		case 'r90cw':
+			dispatchRotate90DegreesClockwise(argv);
 			break;
 
 		/*

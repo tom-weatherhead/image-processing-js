@@ -10,8 +10,22 @@ const jpeg = require('jpeg-js');
 const convolve = require('./convolve.js');
 const flip = require('./flip.js');
 const mapColours = require('./map-colours.js');
+const mapCoordinates = require('./map-coordinates.js');
 const mirror = require('./mirror.js');
 const resample = require('./resample.js');
+const rotate = require('./rotate.js');
+
+function createImage (width, height, bytesPerPixel = 4) {
+	const bytesPerLine = bytesPerPixel * width;
+
+	return {
+		width: width,
+		height: height,
+		bytesPerPixel: bytesPerPixel,
+		bytesPerLine: bytesPerLine,
+		data: Buffer.alloc(bytesPerLine * height)		// Buffer.unsafealloc() ?
+	};
+}
 
 function loadImageFromJpegFile (srcFilePath) {
 	const srcJpegData = fs.readFileSync(srcFilePath);
@@ -78,6 +92,20 @@ function resampleImageFromJpegFile (srcFilePath, dstFilePath, dstWidth, dstHeigh
 	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
 }
 
+function rotate90DegreesClockwiseFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
+	const srcImage = loadImageFromJpegFile(srcFilePath);
+	const dstImage = rotate.rotate90DegreesClockwiseFromImage(srcImage, createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
+
+	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
+}
+
+function rotate90DegreesCounterclockwiseFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
+	const srcImage = loadImageFromJpegFile(srcFilePath);
+	const dstImage = rotate.rotate90DegreesCounterclockwiseFromImage(srcImage, createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
+
+	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
+}
+
 module.exports = {
 	loadImageFromJpegFile: loadImageFromJpegFile,
 
@@ -99,5 +127,8 @@ module.exports = {
 	modeBilinear: resample.modeBilinear,
 	modeBicubic: resample.modeBicubic,
 	resampleImageFromBuffer: resample.resampleImageFromBuffer,
-	resampleImageFromJpegFile: resampleImageFromJpegFile
+	resampleImageFromJpegFile: resampleImageFromJpegFile,
+
+	rotate90DegreesClockwiseFromJpegFile: rotate90DegreesClockwiseFromJpegFile,
+	rotate90DegreesCounterclockwiseFromJpegFile: rotate90DegreesCounterclockwiseFromJpegFile
 };
