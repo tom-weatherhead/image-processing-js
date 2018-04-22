@@ -59,14 +59,14 @@ function saveImageFromJpegFile (dstImage, dstFilePath, dstQuality) {
 
 function convolveImageFromJpegFile (srcFilePath, dstFilePath, sigma, kernelSize, dstQuality) {
 	const srcImage = loadImageFromJpegFile(srcFilePath);
-	const dstImage = convolve.convolveImageFromBuffer(srcImage, sigma, kernelSize);
+	const dstImage = convolve.convolveImageFromBuffer(srcImage, sigma, kernelSize);		// , fnCreateImage
 
 	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
 }
 
 function flipImageFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
 	const srcImage = loadImageFromJpegFile(srcFilePath);
-	const dstImage = flip.flipImageFromBuffer(srcImage);
+	const dstImage = flip.flipImageFromBuffer(srcImage, createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
 
 	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
 }
@@ -80,14 +80,14 @@ function mapColoursInImageFromJpegFile (srcFilePath, dstFilePath, fnMapColours, 
 
 function mirrorImageFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
 	const srcImage = loadImageFromJpegFile(srcFilePath);
-	const dstImage = mirror.mirrorImageFromBuffer(srcImage);
+	const dstImage = mirror.mirrorImageFromBuffer(srcImage, createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
 
 	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
 }
 
 function resampleImageFromJpegFile (srcFilePath, dstFilePath, dstWidth, dstHeight, mode, dstQuality) {
 	const srcImage = loadImageFromJpegFile(srcFilePath);
-	const dstImage = resample.resampleImageFromBuffer(srcImage, dstWidth, dstHeight, mode);
+	const dstImage = resample.resampleImageFromBuffer(srcImage, dstWidth, dstHeight, mode);		// , fnCreateImage
 
 	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
 }

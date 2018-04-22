@@ -231,7 +231,7 @@ function get1DResamplingFunction (mode) {
 	}
 }
 
-function resampleImageFromBuffer (srcImage, dstWidth, dstHeight, mode) {
+function resampleImageFromBuffer (srcImage, dstWidth, dstHeight, mode) {	// , fnCreateImage
 	const fn1DResamplingFunction = get1DResamplingFunction(mode);
 
 	if (!fn1DResamplingFunction) {

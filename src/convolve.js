@@ -79,7 +79,7 @@ function convolve1D (dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, 
 	}
 }
 
-function convolveImageFromBuffer (srcImage, sigma, kernelSize) {
+function convolveImageFromBuffer (srcImage, sigma, kernelSize) {	// , fnCreateImage
 	const kernel = gaussianBlurEngine.generateKernel(sigma, kernelSize);
 	const bytesPerPixel = 4;	// Assume that the pixel format is RGBA.
 
