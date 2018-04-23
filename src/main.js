@@ -13,6 +13,7 @@ const flip = require('./flip.js');
 const mapColours = require('./map-colours.js');
 const mapCoordinates = require('./map-coordinates.js');
 const mirror = require('./mirror.js');
+const pixelate = require('./pixelate.js');
 const resample = require('./resample.js');
 const rotate = require('./rotate.js');
 
@@ -96,6 +97,13 @@ function mirrorImageFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
 	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
 }
 
+function pixelateImageFromJpegFile (srcFilePath, dstFilePath, pixelWidth, pixelHeight, dstQuality) {
+	const srcImage = loadImageFromJpegFile(srcFilePath);
+	const dstImage = pixelate.pixelateFromImage(srcImage, pixelWidth, pixelHeight, createImage);
+
+	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
+}
+
 function resampleImageFromJpegFile (srcFilePath, dstFilePath, dstWidth, dstHeight, mode, dstQuality) {
 	const srcImage = loadImageFromJpegFile(srcFilePath);
 	const dstImage = resample.resampleImageFromBuffer(srcImage, dstWidth, dstHeight, mode);		// , fnCreateImage
@@ -135,6 +143,8 @@ module.exports = {
 	desaturateRGBA: mapColours.desaturateRGBA,
 	mapColoursInImageFromBuffer: mapColours.mapColoursInImageFromBuffer,
 	mapColoursInImageFromJpegFile: mapColoursInImageFromJpegFile,
+
+	pixelateImageFromJpegFile: pixelateImageFromJpegFile,
 
 	modeNearestNeighbour: resample.modeNearestNeighbour,
 	modeBilinear: resample.modeBilinear,

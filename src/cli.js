@@ -139,6 +139,43 @@ function dispatchMirror (argv) {
 	engine.mirrorImageFromJpegFile(srcFilePath, dstFilePath);
 }
 
+function dispatchPixelate (argv) {
+	let srcFilePath = defaultSrcFilePath;
+	let dstFilePath = 'test-output/pixelate.jpg';
+	let pixelWidth = 8;
+	let pixelHeight = 8;
+	let dstQuality;
+
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+		//const thereIsANextArg = i < argv.length - 1;
+
+		if (arg.substr(0, 1) !== '-') {
+
+			if (!srcFilePath) {
+				srcFilePath = arg;
+			} else if (!dstFilePath) {
+				dstFilePath = arg;
+			}
+		} else if (i < argv.length - 1) {
+			const nextArg = argv[i + 1];
+			i++;
+
+			if (arg === '-w') {
+				pixelWidth = parseInt(nextArg);
+			} else if (arg === '-h') {
+				pixelHeight = parseInt(nextArg);
+			} else if (arg === '-q') {
+				dstQuality = parseInt(nextArg);
+			}
+		}
+	}
+
+	console.log('Pixelate.');
+	//console.log(`engine.resampleImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${dstWidth}, ${dstHeight}, ${mode}, ${dstQuality});`);
+	engine.pixelateImageFromJpegFile(srcFilePath, dstFilePath, pixelWidth, pixelHeight, dstQuality);
+}
+
 function dispatchResample (argv) {
 	let srcFilePath = defaultSrcFilePath;
 	let dstFilePath = 'test-output/resample.jpg';
@@ -188,7 +225,8 @@ function dispatchResample (argv) {
 		dstHeight = defaultDstHeight;
 	}
 
-	console.log(`engine.resampleImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${dstWidth}, ${dstHeight}, ${mode}, ${dstQuality});`);
+	console.log('Resample.');
+	//console.log(`engine.resampleImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${dstWidth}, ${dstHeight}, ${mode}, ${dstQuality});`);
 	engine.resampleImageFromJpegFile(srcFilePath, dstFilePath, dstWidth, dstHeight, mode, dstQuality);
 }
 
@@ -272,6 +310,10 @@ function dispatch (argv) {
 
 		case 'm':
 			dispatchMirror(argv);
+			break;
+
+		case 'p':
+			dispatchPixelate(argv);
 			break;
 
 		case 'rs':
