@@ -125,6 +125,13 @@ function rotate90DegreesCounterclockwiseFromJpegFile (srcFilePath, dstFilePath, 
 	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
 }
 
+function rotate180DegreesFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
+	const srcImage = loadImageFromJpegFile(srcFilePath);
+	const dstImage = rotate.rotate180DegreesFromImage(srcImage, createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
+
+	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
+}
+
 module.exports = {
 	loadImageFromJpegFile: loadImageFromJpegFile,
 
@@ -153,5 +160,6 @@ module.exports = {
 	resampleImageFromJpegFile: resampleImageFromJpegFile,
 
 	rotate90DegreesClockwiseFromJpegFile: rotate90DegreesClockwiseFromJpegFile,
-	rotate90DegreesCounterclockwiseFromJpegFile: rotate90DegreesCounterclockwiseFromJpegFile
+	rotate90DegreesCounterclockwiseFromJpegFile: rotate90DegreesCounterclockwiseFromJpegFile,
+	rotate180DegreesFromJpegFile: rotate180DegreesFromJpegFile
 };

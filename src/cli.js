@@ -288,6 +288,35 @@ function dispatchRotate90DegreesCounterclockwise (argv) {
 	engine.rotate90DegreesCounterclockwiseFromJpegFile(srcFilePath, dstFilePath, dstQuality);
 }
 
+function dispatchRotate180Degrees (argv) {
+	let srcFilePath = defaultSrcFilePath;
+	let dstFilePath = 'test-output/rotate180.jpg';
+	let dstQuality;
+
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+
+		if (arg.substr(0, 1) !== '-') {
+
+			if (!srcFilePath) {
+				srcFilePath = arg;
+			} else if (!dstFilePath) {
+				dstFilePath = arg;
+			}
+		} else if (i < argv.length - 1) {
+			const nextArg = argv[i + 1];
+			i++;
+
+			if (arg === '-q') {
+				dstQuality = parseInt(nextArg);
+			}
+		}
+	}
+
+	console.log('Rotate 180 degrees.');
+	engine.rotate180DegreesFromJpegFile(srcFilePath, dstFilePath, dstQuality);
+}
+
 function dispatch (argv) {
 	const command = argv.shift();
 
@@ -326,6 +355,10 @@ function dispatch (argv) {
 
 		case 'r90cw':
 			dispatchRotate90DegreesClockwise(argv);
+			break;
+
+		case 'r180':
+			dispatchRotate180Degrees(argv);
 			break;
 
 		/*
