@@ -16,6 +16,27 @@ const engine = require('..');
 //const defaultSrcFilePath = 'test/images/unconventional-table.jpg';
 const defaultSrcFilePath = 'test/images/fast-and-fourier.jpg';
 
+function dispatchCompositeTest (argv) {
+	let srcFilePath = defaultSrcFilePath;
+	let dstFilePath = 'test-output/composite-test.jpg';
+
+	for (let i = 0; i < argv.length; i++) {
+		const arg = argv[i];
+
+		if (arg.substr(0, 1) !== '-') {
+
+			if (!srcFilePath) {
+				srcFilePath = arg;
+			} else if (!dstFilePath) {
+				dstFilePath = arg;
+			}
+		}
+	}
+
+	console.log('Composite test.');
+	engine.compositeTestFromJpegFile(srcFilePath, dstFilePath);
+}
+
 function dispatchDesaturate (argv) {
 	let srcFilePath = defaultSrcFilePath;
 	let dstFilePath = 'test-output/desaturate.jpg';
@@ -233,6 +254,10 @@ function dispatch (argv) {
 	const command = argv.shift();
 
 	switch (command) {
+		case 'c':
+			dispatchCompositeTest(argv);
+			break;
+
 		case 'ds':
 			dispatchDesaturate(argv);
 			break;

@@ -7,6 +7,7 @@
 const fs = require('fs');
 const jpeg = require('jpeg-js');
 
+const composite = require('./composite.js');
 const convolve = require('./convolve.js');
 const flip = require('./flip.js');
 const mapColours = require('./map-colours.js');
@@ -17,6 +18,7 @@ const rotate = require('./rotate.js');
 
 function createImage (width, height, bytesPerPixel = 4) {
 	const bytesPerLine = bytesPerPixel * width;
+	//const bytesPerLine = Math.ceil(bytesPerPixel * width / 4) * 4;	// Ensure 4-byte alignment.
 
 	return {
 		width: width,
@@ -55,6 +57,15 @@ function saveImageFromJpegFile (dstImage, dstFilePath, dstQuality) {
 
 		fs.writeFileSync(dstFilePath, dstJpegData.data);
 	}
+}
+
+// ****
+
+function compositeTestFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
+	const srcImage = loadImageFromJpegFile(srcFilePath);
+	const dstImage = composite.compositeTest(srcImage, createImage);
+
+	saveImageFromJpegFile(dstImage, dstFilePath, dstQuality);
 }
 
 function convolveImageFromJpegFile (srcFilePath, dstFilePath, sigma, kernelSize, dstQuality) {
@@ -108,6 +119,8 @@ function rotate90DegreesCounterclockwiseFromJpegFile (srcFilePath, dstFilePath, 
 
 module.exports = {
 	loadImageFromJpegFile: loadImageFromJpegFile,
+
+	compositeTestFromJpegFile: compositeTestFromJpegFile,
 
 	convolveImageFromBuffer: convolve.convolveImageFromBuffer,
 	convolveImageFromJpegFile: convolveImageFromJpegFile,
