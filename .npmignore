@@ -60,4 +60,3 @@ typings/
 .travis.yml
 
 test/
-test-output/

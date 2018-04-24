@@ -13,12 +13,12 @@ const engine = require('..');
 // -sl = Bilinear
 // -sc = Bicubic
 
-//const defaultSrcFilePath = 'test/images/unconventional-table.jpg';
-const defaultSrcFilePath = 'test/images/fast-and-fourier.jpg';
+//const defaultSrcFilePath = 'test/input-files/unconventional-table.jpg';
+const defaultSrcFilePath = 'test/input-files/fast-and-fourier.jpg';
 
 function dispatchCompositeTest (argv) {
 	let srcFilePath = defaultSrcFilePath;
-	let dstFilePath = 'test-output/composite-test.jpg';
+	let dstFilePath = 'test/output-files/composite-test.jpg';
 
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
@@ -33,13 +33,13 @@ function dispatchCompositeTest (argv) {
 		}
 	}
 
-	console.log('Composite test.');
+	console.log('Composite.');
 	engine.compositeTestFromJpegFile(srcFilePath, dstFilePath);
 }
 
 function dispatchDesaturate (argv) {
 	let srcFilePath = defaultSrcFilePath;
-	let dstFilePath = 'test-output/desaturate.jpg';
+	let dstFilePath = 'test/output-files/desaturate.jpg';
 
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
@@ -55,7 +55,7 @@ function dispatchDesaturate (argv) {
 	}
 
 	// console.log('Seeing red.');
-	// engine.mapColoursInImageFromJpegFile('test/images/unconventional-table.jpg', 'test-output/seeing-red.jpg', engine.seeingRedRGBA);
+	// engine.mapColoursInImageFromJpegFile('test/images/unconventional-table.jpg', 'test/output-files/seeing-red.jpg', engine.seeingRedRGBA);
 
 	console.log('Desaturate.');
 	engine.mapColoursInImageFromJpegFile(srcFilePath, dstFilePath, engine.desaturateRGBA);
@@ -63,7 +63,7 @@ function dispatchDesaturate (argv) {
 
 function dispatchFlip (argv) {
 	let srcFilePath = defaultSrcFilePath;
-	let dstFilePath = 'test-output/flip.jpg';
+	let dstFilePath = 'test/output-files/flip.jpg';
 
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
@@ -84,7 +84,7 @@ function dispatchFlip (argv) {
 
 function dispatchGaussianBlur (argv) {
 	let srcFilePath = defaultSrcFilePath;
-	let dstFilePath = 'test-output/gaussian-blur.jpg';
+	let dstFilePath = 'test/output-files/gaussian-blur.jpg';
 	let sigma = 1.0;
 	let kernelSize = 5;
 	let dstQuality;
@@ -114,13 +114,14 @@ function dispatchGaussianBlur (argv) {
 		}
 	}
 
+	console.log('Gaussian blur.');
 	//console.log(`engine.convolveImageFromJpegFile(${srcFilePath}, ${dstFilePath}, ${sigma}, ${kernelSize}, ${dstQuality});`);
 	engine.convolveImageFromJpegFile(srcFilePath, dstFilePath, sigma, kernelSize, dstQuality);
 }
 
 function dispatchMirror (argv) {
 	let srcFilePath = defaultSrcFilePath;
-	let dstFilePath = 'test-output/mirror.jpg';
+	let dstFilePath = 'test/output-files/mirror.jpg';
 
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];
@@ -141,7 +142,7 @@ function dispatchMirror (argv) {
 
 function dispatchPixelate (argv) {
 	let srcFilePath = defaultSrcFilePath;
-	let dstFilePath = 'test-output/pixelate.jpg';
+	let dstFilePath = 'test/output-files/pixelate.jpg';
 	let pixelWidth = 8;
 	let pixelHeight = 8;
 	let dstQuality;
@@ -178,7 +179,7 @@ function dispatchPixelate (argv) {
 
 function dispatchResample (argv) {
 	let srcFilePath = defaultSrcFilePath;
-	let dstFilePath = 'test-output/resample.jpg';
+	let dstFilePath = 'test/output-files/resample.jpg';
 	let dstWidth = 0;
 	let dstHeight = 0;
 	let dstQuality;
@@ -232,7 +233,7 @@ function dispatchResample (argv) {
 
 function dispatchRotate90DegreesClockwise (argv) {
 	let srcFilePath = defaultSrcFilePath;
-	let dstFilePath = 'test-output/rotate90cw.jpg';
+	let dstFilePath = 'test/output-files/rotate90cw.jpg';
 	let dstQuality;
 
 	for (let i = 0; i < argv.length; i++) {
@@ -261,7 +262,7 @@ function dispatchRotate90DegreesClockwise (argv) {
 
 function dispatchRotate90DegreesCounterclockwise (argv) {
 	let srcFilePath = defaultSrcFilePath;
-	let dstFilePath = 'test-output/rotate90ccw.jpg';
+	let dstFilePath = 'test/output-files/rotate90ccw.jpg';
 	let dstQuality;
 
 	for (let i = 0; i < argv.length; i++) {
@@ -290,7 +291,7 @@ function dispatchRotate90DegreesCounterclockwise (argv) {
 
 function dispatchRotate180Degrees (argv) {
 	let srcFilePath = defaultSrcFilePath;
-	let dstFilePath = 'test-output/rotate180.jpg';
+	let dstFilePath = 'test/output-files/rotate180.jpg';
 	let dstQuality;
 
 	for (let i = 0; i < argv.length; i++) {
