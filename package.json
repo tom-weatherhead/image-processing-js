@@ -24,13 +24,13 @@
   "keywords": [
     "compositing",
     "convolution",
-	"flip",
+    "flip",
     "Gaussian blur",
     "jpeg",
-	"mirror",
-	"pixelate",
+    "mirror",
+    "pixelate",
     "resample",
-	"rotate"
+    "rotate"
   ],
   "dependencies": {
     "jpeg-js": "^0.3.4"
