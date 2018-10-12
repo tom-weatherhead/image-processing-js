@@ -2,7 +2,7 @@
 
 'use strict';
 
-module.exports = function (grunt) {
+module.exports = grunt => {
 	const packageJsonFilename = 'package.json';
 	const packageJsonContents = grunt.file.readJSON(packageJsonFilename);
 
@@ -11,47 +11,20 @@ module.exports = function (grunt) {
 		eslint: {
 			target: [
 				'*.js',
-				'src/*.js',
-				'test/*.js'
+				'src/*.js' /*,
+				'test/*.js' */
 			]
 		},
-		/*
-		mochaTest: {
-			options: {
-				reporter: 'spec'
-			},
-			test: {
-				src: ['test/*_spec.js']
-			}
-		},
-		*/
 		nsp: {
 			package: packageJsonContents
-		//},
-		// watch : {
-		//	js : {
-		//		files : ['src/*.js'],
-		//		tasks : 'build'
-		//	},
-		//	pkg: {
-		//		files : packageJsonFilename,
-		//		tasks : 'build'
-		//	},
-		//	readme : {
-		//		files : 'README.md',
-		//		tasks : 'build'
-		//	}
 		}
 	});
 
 	// Tasks:
 	grunt.loadNpmTasks('grunt-eslint');
-	//grunt.loadNpmTasks('grunt-mocha-test');
 	grunt.loadNpmTasks('grunt-nsp');
-	// grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// Aliases:
-	// grunt.registerTask('test', ['eslint', 'mochaTest', 'nsp']);
 	grunt.registerTask('test', ['eslint', 'nsp']);
 	grunt.registerTask('default', ['test']);
 };

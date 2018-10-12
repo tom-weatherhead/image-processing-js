@@ -16,6 +16,41 @@ const engine = require('..');
 //const defaultSrcFilePath = 'test/input-files/unconventional-table.jpg';
 const defaultSrcFilePath = 'test/input-files/fast-and-fourier.jpg';
 
+// The option -q (JPEG export quality) is common to all operations; its value must be an integer in the range [0, 100].
+
+/*
+const dispatchDescriptors = {
+	'c': {},
+	'ds': {},
+	'f': {},
+	'gb': {},
+	'm': {},
+	'p': {},
+	'rs': {
+		func: engine.resampleImageFromJpegFile,
+		defaultDstFilename: 'resample.jpg',
+		optionsWithNoArguments: {
+			'sc': options => { options.mode = engine.modeBicubic },
+			'sl': options => { options.mode = engine.modeBilinear },
+			'sn': options => { options.mode = engine.modeNearestNeighbour }
+		},
+		optionsWithOneArgument: {
+			'h': {
+				argumentName: 'height',
+				argumentType: 'i'
+			},
+			'w': {
+				argumentName: 'width',
+				argumentType: 'i'
+			}
+		}
+	},
+	'r90ccw': {},
+	'r90cw': {},
+	'r180': {}
+};
+*/
+
 function dispatchCompositeTest (argv) {
 	let srcFilePath = defaultSrcFilePath;
 	let dstFilePath = 'test/output-files/composite-test.jpg';
@@ -361,11 +396,6 @@ function dispatch (argv) {
 		case 'r180':
 			dispatchRotate180Degrees(argv);
 			break;
-
-		/*
-		case '':
-			break;
-		*/
 
 		default:
 			console.error('Unrecognized command:', command);

@@ -6,11 +6,8 @@ const gaussianBlurEngine = require('./gaussian-blur.js');
 
 function convolve1D (dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, srcBuffer, srcInitialOffset, numSrcPixels, srcPixelStride, numBytesPerPixel, kernel, kernelOffset) {
 	let dstPixelOffsetInBuffer = dstInitialOffset;
-	//let accumulator = 0;
 
 	for (let dstPixelIndex = 0; dstPixelIndex < numDstPixels; dstPixelIndex++) {
-		// const dstPixelIndexInSrcSpace = accumulator / numDstPixels;
-		// const srcPixelIndex = Math.trunc(dstPixelIndexInSrcSpace);
 		const srcPixelIndex = dstPixelIndex;
 		let firstSrcPixelIndex = Math.max(srcPixelIndex - kernelOffset, 0);
 		let lastSrcPixelIndex = Math.min(srcPixelIndex + kernelOffset, numSrcPixels - 1);
@@ -22,11 +19,7 @@ function convolve1D (dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, 
 		let srcPixelOffsetInBuffer = firstSrcPixelIndex * srcPixelStride + srcInitialOffset;		// We need a truncating integer division operator.
 
 		for (let srcPixelIndexInRun = firstSrcPixelIndex; srcPixelIndexInRun <= lastSrcPixelIndex; srcPixelIndexInRun++) {
-			//const srcPixelWeight = getBicubicWeight(srcPixelIndexInRun - dstPixelIndexInSrcSpace);
-			//const srcPixelWeight = getBicubicWeight((srcPixelIndex - dstPixelIndexInSrcSpace) * numDstPixels / numSrcPixels);
 			const srcPixelWeight = kernel[srcPixelIndexInRun - srcPixelIndex + kernelOffset];
-
-			// console.log(`srcPixelWeight = ${srcPixelWeight}`);
 
 			switch (numBytesPerPixel) {
 				case 4:
@@ -45,7 +38,6 @@ function convolve1D (dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, 
 		}
 
 		if (totalWeight > 0) {
-			// console.log(`Acc ${accumulator3} ${accumulator2} ${accumulator1} ${accumulator0} ${totalWeight}`);
 
 			switch (numBytesPerPixel) {
 				case 4:
@@ -75,22 +67,24 @@ function convolve1D (dstBuffer, dstInitialOffset, numDstPixels, dstPixelStride, 
 		}
 
 		dstPixelOffsetInBuffer += dstPixelStride;
-		//accumulator += numSrcPixels;
 	}
 }
 
-function convolveImageFromBuffer (srcImage, sigma, kernelSize) {	// , fnCreateImage
+function convolveImageFromBuffer (srcImage, sigma, kernelSize, fnCreateImage) {
 	const kernel = gaussianBlurEngine.generateKernel(sigma, kernelSize);
 	const bytesPerPixel = 4;	// Assume that the pixel format is RGBA.
 
 	const width = srcImage.width;
 	const height = srcImage.height;
+	// TODO: Use srcBytesPerLine, intermediateBytesPerLine, and dstBytesPerLine instead of bytesPerLine
 	const bytesPerLine = width * bytesPerPixel;
 	const srcBuffer = srcImage.data;
 
-	const intermediateBuffer = Buffer.alloc(height * bytesPerLine);
+	const intermediateImage = fnCreateImage(width, height, bytesPerPixel);
+	const intermediateBuffer = intermediateImage.data;
 
-	const dstBuffer = Buffer.alloc(height * bytesPerLine);
+	const dstImage = fnCreateImage(width, height, bytesPerPixel);
+	const dstBuffer = dstImage.data;
 
 	const kernelOffset = Math.trunc(kernel.length / 2);
 
@@ -106,11 +100,7 @@ function convolveImageFromBuffer (srcImage, sigma, kernelSize) {	// , fnCreateIm
 		convolve1D(dstBuffer, col * bytesPerPixel, height, bytesPerLine, intermediateBuffer, col * bytesPerPixel, height, bytesPerLine, bytesPerPixel, kernel, kernelOffset);
 	}
 
-	return {
-		width: width,
-		height: height,
-		data: dstBuffer
-	};
+	return dstImage;
 }
 
 /*
