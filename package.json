@@ -33,7 +33,7 @@
 		"rotate"
 	],
 	"dependencies": {
-		"thaw-image-utilities.js": "^0.0.0"
+		"thaw-image-utilities.js": "^0.0.1"
 	},
 	"devDependencies": {
 		"grunt": "^1.0.3",
