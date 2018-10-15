@@ -14,17 +14,13 @@ module.exports = grunt => {
 				'src/*.js' /*,
 				'test/*.js' */
 			]
-		},
-		nsp: {
-			package: packageJsonContents
 		}
 	});
 
 	// Tasks:
 	grunt.loadNpmTasks('grunt-eslint');
-	grunt.loadNpmTasks('grunt-nsp');
 
 	// Aliases:
-	grunt.registerTask('test', ['eslint', 'nsp']);
+	grunt.registerTask('test', ['eslint']);
 	grunt.registerTask('default', ['test']);
 };
