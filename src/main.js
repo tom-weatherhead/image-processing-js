@@ -25,7 +25,10 @@ function compositeTestFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
 
 function convolveImageFromJpegFile (srcFilePath, dstFilePath, sigma, kernelSize, dstQuality) {
 	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+	console.log('srcImage is', srcImage);
+	console.log('imageUtilities.createImage is', imageUtilities.createImage);
 	const dstImage = convolve.convolveImageFromBuffer(srcImage, sigma, kernelSize, imageUtilities.createImage);
+	console.log('dstImage is', dstImage);
 
 	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
 }
@@ -40,13 +43,17 @@ function flipImageFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
 function mapColoursInImageFromJpegFile (srcFilePath, dstFilePath, fnMapColours, dstQuality) {
 	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
 	const dstImage = mapColours.mapColoursInImageFromBuffer(srcImage, fnMapColours);
+	// const dstImage = srcImage;
 
 	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
 }
 
 function mirrorImageFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
 	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+	console.log('srcImage is', srcImage);
+	console.log('imageUtilities.createImage is', imageUtilities.createImage);
 	const dstImage = mirror.mirrorImageFromBuffer(srcImage, imageUtilities.createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
+	console.log('dstImage is', dstImage);
 
 	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
 }
