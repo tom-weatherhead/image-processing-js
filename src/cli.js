@@ -6,7 +6,14 @@
 
 // E.g. : npm start -- -sc -w 235 -h 763 in.jpg out.jpg -q 34
 
-const engine = require('..');
+/*
+const options = {
+	fs: require('fs')
+};
+const engine = require('..')(options);
+*/
+
+const engine = require('..')();
 
 // CLI: resample-jpeg [-sn | -sl | -sc] -w dstWidth -h dstHeight
 // -sn = Nearest Neighbour

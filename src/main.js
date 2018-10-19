@@ -4,8 +4,6 @@
 
 'use strict';
 
-const imageUtilities = require('thaw-image-utilities.js');
-
 const composite = require('./composite.js');
 const convolve = require('./convolve.js');
 const flip = require('./flip.js');
@@ -16,109 +14,114 @@ const pixelate = require('./pixelate.js');
 const resample = require('./resample.js');
 const rotate = require('./rotate.js');
 
-function compositeTestFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
-	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
-	const dstImage = composite.compositeTest(srcImage, imageUtilities.createImage);
+module.exports = options => {
+	const imageUtilities = require('thaw-image-utilities.js')(options);
 
-	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
-}
+	function compositeTestFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
+		const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+		const dstImage = composite.compositeTest(srcImage, imageUtilities.createImage);
 
-function convolveImageFromJpegFile (srcFilePath, dstFilePath, sigma, kernelSize, dstQuality) {
-	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
-	console.log('srcImage is', srcImage);
-	console.log('imageUtilities.createImage is', imageUtilities.createImage);
-	const dstImage = convolve.convolveImageFromBuffer(srcImage, sigma, kernelSize, imageUtilities.createImage);
-	console.log('dstImage is', dstImage);
+		imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
+	}
 
-	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
-}
+	function convolveImageFromJpegFile (srcFilePath, dstFilePath, sigma, kernelSize, dstQuality) {
+		const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+		// console.log('srcImage is', srcImage);
+		// console.log('imageUtilities.createImage is', imageUtilities.createImage);
+		const dstImage = convolve.convolveImageFromBuffer(srcImage, sigma, kernelSize, imageUtilities.createImage);
+		// console.log('dstImage is', dstImage);
 
-function flipImageFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
-	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
-	const dstImage = flip.flipImageFromBuffer(srcImage, imageUtilities.createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
+		imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
+	}
 
-	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
-}
+	function flipImageFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
+		const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+		const dstImage = flip.flipImageFromBuffer(srcImage, imageUtilities.createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
 
-function mapColoursInImageFromJpegFile (srcFilePath, dstFilePath, fnMapColours, dstQuality) {
-	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
-	const dstImage = mapColours.mapColoursInImageFromBuffer(srcImage, fnMapColours);
-	// const dstImage = srcImage;
+		imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
+	}
 
-	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
-}
+	function mapColoursInImageFromJpegFile (srcFilePath, dstFilePath, fnMapColours, dstQuality) {
+		const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+		const dstImage = mapColours.mapColoursInImageFromBuffer(srcImage, fnMapColours);
+		// const dstImage = srcImage;
 
-function mirrorImageFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
-	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
-	console.log('srcImage is', srcImage);
-	console.log('imageUtilities.createImage is', imageUtilities.createImage);
-	const dstImage = mirror.mirrorImageFromBuffer(srcImage, imageUtilities.createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
-	console.log('dstImage is', dstImage);
+		imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
+	}
 
-	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
-}
+	function mirrorImageFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
+		const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+		console.log('srcImage is', srcImage);
+		console.log('imageUtilities.createImage is', imageUtilities.createImage);
+		const dstImage = mirror.mirrorImageFromBuffer(srcImage, imageUtilities.createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
+		console.log('dstImage is', dstImage);
 
-function pixelateImageFromJpegFile (srcFilePath, dstFilePath, pixelWidth, pixelHeight, dstQuality) {
-	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
-	const dstImage = pixelate.pixelateFromImage(srcImage, pixelWidth, pixelHeight, imageUtilities.createImage);
+		imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
+	}
 
-	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
-}
+	function pixelateImageFromJpegFile (srcFilePath, dstFilePath, pixelWidth, pixelHeight, dstQuality) {
+		const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+		const dstImage = pixelate.pixelateFromImage(srcImage, pixelWidth, pixelHeight, imageUtilities.createImage);
 
-function resampleImageFromJpegFile (srcFilePath, dstFilePath, dstWidth, dstHeight, mode, dstQuality) {
-	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
-	const dstImage = resample.resampleImageFromBuffer(srcImage, dstWidth, dstHeight, mode);		// , fnCreateImage
+		imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
+	}
 
-	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
-}
+	function resampleImageFromJpegFile (srcFilePath, dstFilePath, dstWidth, dstHeight, mode, dstQuality) {
+		const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+		const dstImage = resample.resampleImageFromBuffer(srcImage, dstWidth, dstHeight, mode);		// , fnCreateImage
 
-function rotate90DegreesClockwiseFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
-	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
-	const dstImage = rotate.rotate90DegreesClockwiseFromImage(srcImage, imageUtilities.createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
+		imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
+	}
 
-	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
-}
+	function rotate90DegreesClockwiseFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
+		const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+		const dstImage = rotate.rotate90DegreesClockwiseFromImage(srcImage, imageUtilities.createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
 
-function rotate90DegreesCounterclockwiseFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
-	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
-	const dstImage = rotate.rotate90DegreesCounterclockwiseFromImage(srcImage, imageUtilities.createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
+		imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
+	}
 
-	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
-}
+	function rotate90DegreesCounterclockwiseFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
+		const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+		const dstImage = rotate.rotate90DegreesCounterclockwiseFromImage(srcImage, imageUtilities.createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
 
-function rotate180DegreesFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
-	const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
-	const dstImage = rotate.rotate180DegreesFromImage(srcImage, imageUtilities.createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
+		imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
+	}
 
-	imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
-}
+	function rotate180DegreesFromJpegFile (srcFilePath, dstFilePath, dstQuality) {
+		const srcImage = imageUtilities.loadImageFromJpegFile(srcFilePath);
+		const dstImage = rotate.rotate180DegreesFromImage(srcImage, imageUtilities.createImage, mapCoordinates.mapImageByCoordinatesFromBuffer);
 
-module.exports = {
-	compositeTestFromJpegFile: compositeTestFromJpegFile,
+		imageUtilities.saveImageToJpegFile(dstImage, dstFilePath, dstQuality);
+	}
 
-	convolveImageFromBuffer: convolve.convolveImageFromBuffer,
-	convolveImageFromJpegFile: convolveImageFromJpegFile,
+	return {
+		compositeTestFromJpegFile: compositeTestFromJpegFile,
 
-	flipImageFromBuffer: flip.flipImageFromBuffer,
-	flipImageFromJpegFile: flipImageFromJpegFile,
+		convolveImageFromBuffer: convolve.convolveImageFromBuffer,
+		convolveImageFromJpegFile: convolveImageFromJpegFile,
 
-	mirrorImageFromBuffer: mirror.mirrorImageFromBuffer,
-	mirrorImageFromJpegFile: mirrorImageFromJpegFile,
+		flipImageFromBuffer: flip.flipImageFromBuffer,
+		flipImageFromJpegFile: flipImageFromJpegFile,
 
-	seeingRedRGBA: mapColours.seeingRedRGBA,
-	desaturateRGBA: mapColours.desaturateRGBA,
-	mapColoursInImageFromBuffer: mapColours.mapColoursInImageFromBuffer,
-	mapColoursInImageFromJpegFile: mapColoursInImageFromJpegFile,
+		mirrorImageFromBuffer: mirror.mirrorImageFromBuffer,
+		mirrorImageFromJpegFile: mirrorImageFromJpegFile,
 
-	pixelateImageFromJpegFile: pixelateImageFromJpegFile,
+		seeingRedRGBA: mapColours.seeingRedRGBA,
+		desaturateRGBA: mapColours.desaturateRGBA,
+		mapColoursInImageFromBuffer: mapColours.mapColoursInImageFromBuffer,
+		mapColoursInImageFromJpegFile: mapColoursInImageFromJpegFile,
 
-	modeNearestNeighbour: resample.modeNearestNeighbour,
-	modeBilinear: resample.modeBilinear,
-	modeBicubic: resample.modeBicubic,
-	resampleImageFromBuffer: resample.resampleImageFromBuffer,
-	resampleImageFromJpegFile: resampleImageFromJpegFile,
+		pixelateImageFromBuffer: (srcImage, pixelWidth, pixelHeight) => pixelate.pixelateFromImage(srcImage, pixelWidth, pixelHeight, imageUtilities.createImage),
+		pixelateImageFromJpegFile: pixelateImageFromJpegFile,
 
-	rotate90DegreesClockwiseFromJpegFile: rotate90DegreesClockwiseFromJpegFile,
-	rotate90DegreesCounterclockwiseFromJpegFile: rotate90DegreesCounterclockwiseFromJpegFile,
-	rotate180DegreesFromJpegFile: rotate180DegreesFromJpegFile
+		modeNearestNeighbour: resample.modeNearestNeighbour,
+		modeBilinear: resample.modeBilinear,
+		modeBicubic: resample.modeBicubic,
+		resampleImageFromBuffer: resample.resampleImageFromBuffer,
+		resampleImageFromJpegFile: resampleImageFromJpegFile,
+
+		rotate90DegreesClockwiseFromJpegFile: rotate90DegreesClockwiseFromJpegFile,
+		rotate90DegreesCounterclockwiseFromJpegFile: rotate90DegreesCounterclockwiseFromJpegFile,
+		rotate180DegreesFromJpegFile: rotate180DegreesFromJpegFile
+	};
 };

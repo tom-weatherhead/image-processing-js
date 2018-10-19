@@ -1,6 +1,6 @@
 {
 	"name": "image-processing-js",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "A pure JavaScript raster image processing engine.",
 	"main": "src/main.js",
 	"homepage": "https://github.com/tom-weatherhead/image-processing-js#readme",
@@ -33,7 +33,7 @@
 		"rotate"
 	],
 	"dependencies": {
-		"thaw-image-utilities.js": "^0.0.2"
+		"thaw-image-utilities.js": "^0.0.3"
 	},
 	"devDependencies": {
 		"grunt": "^1.0.3",
