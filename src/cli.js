@@ -6,14 +6,16 @@
 
 // E.g. : npm start -- -sc -w 235 -h 763 in.jpg out.jpg -q 34
 
-/*
-const options = {
-	fs: require('fs')
-};
-const engine = require('..')(options);
-*/
+const fs = require('fs');
+// const path = require('path');
 
-const engine = require('..')();
+const options = {
+	fs: fs // require('fs')
+};
+
+const engine = require('..')(options);
+
+// const engine = require('..')();
 
 // CLI: resample-jpeg [-sn | -sl | -sc] -w dstWidth -h dstHeight
 // -sn = Nearest Neighbour
@@ -60,7 +62,18 @@ const dispatchDescriptors = {
 
 function dispatchCompositeTest (argv) {
 	let srcFilePath = defaultSrcFilePath;
+	// let srcFilePath = '../' + defaultSrcFilePath;
+	// let srcFilePath = __dirname + '/../' + defaultSrcFilePath;
+	// let srcFilePath = path.normalize(path.join(__dirname, '..', defaultSrcFilePath));
+
 	let dstFilePath = 'test/output-files/composite-test.jpg';
+
+	if (!fs.existsSync(srcFilePath)) {
+		console.log(`There is no file at the path ${srcFilePath}`);
+		// console.log(`__dirname is ${__dirname}`);
+
+		return;
+	}
 
 	for (let i = 0; i < argv.length; i++) {
 		const arg = argv[i];

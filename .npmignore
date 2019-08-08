@@ -60,3 +60,5 @@ typings/
 .travis.yml
 
 test/
+
+.DS_Store
