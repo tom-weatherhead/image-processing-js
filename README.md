@@ -26,13 +26,25 @@ $ npm start rs
 $ npm start rs -sc -w 640 -h 480 -q 60
 ```
 
+Supported bitmap image processing operations:
+
+```
+- Colour transformations
+- Compositing
+- Convolvutions, including Gaussian blur
+- Flip and mirror
+- Pixelate
+- Resampling: Nearest neighbour, bilinear, and bicubic
+- Rotation
+```
+
 TODO:
 
 ```
 - Implement and test resampling in context
 - Test the new dividend remapping algorithm
 - Attempt to improve the performance of the arithmetic code by using integer types such as UINT16,
-and optimized operations such as (x / 256) === (x << 8);
+and optimized operations such as (x / 256) === (x >> 8);
 - Add unit tests
 ```
 
