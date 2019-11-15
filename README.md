@@ -13,7 +13,6 @@ A pure JavaScript raster image processing engine.
 Clone the repository and build it:
 
 ```sh
-$ npm i -g grunt
 $ git clone https://github.com/tom-weatherhead/image-processing-js.git
 $ cd image-processing-js
 $ npm run build
@@ -22,8 +21,8 @@ $ npm run build
 Then run an image processing command; e.g.
 
 ```sh
-$ npm start rs
-$ npm start rs -sc -w 640 -h 480 -q 60
+$ npm start -- rs
+$ npm start -- rs -sc -w 640 -h 480 -q 60
 ```
 
 Supported bitmap image processing operations:
