@@ -1,12 +1,9 @@
 {
 	"name": "image-processing-js",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"description": "A pure JavaScript raster image processing engine.",
 	"homepage": "https://github.com/tom-weatherhead/image-processing-js#readme",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/tom-weatherhead/image-processing-js.git"
-	},
+	"repository": "github:tom-weatherhead/image-processing-js",
 	"bugs": {
 		"url": "https://github.com/tom-weatherhead/image-processing-js/issues"
 	},
@@ -45,8 +42,9 @@
 		"thaw-image-utilities.js": "^0.0.5"
 	},
 	"devDependencies": {
-		"babel-mixin": "^0.0.8"
+		"babel-mixin": "^0.0.9",
+		"jest": "^24.9.0"
 	},
-	"author": "Tom Weatherhead <null@2hrd4u.org> (https://httpbin.org/status/418)",
+	"author": "Tom Weatherhead <null@2hrd4u.org> (https://github.com/tom-weatherhead)",
 	"license": "MIT"
 }
