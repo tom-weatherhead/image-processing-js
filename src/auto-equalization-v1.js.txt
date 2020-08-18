@@ -1,0 +1,157 @@
+// From http://andytt.logdown.com/posts/2014/03/27/histogram-equalization
+
+'use strict';
+
+// const imageUtilities = require('image-utilities');
+const imageUtilities = require('thaw-image-utilities.js');
+
+// Image sources:
+//http://i.imgur.com/WEKjn4K.jpg
+//http://i.imgur.com/bQdWzjD.png gray
+
+/*
+function sobelOperators (pixels) {
+	dstCanvas.width = srcCanvas.width;
+	dstCanvas.height = srcCanvas.height;
+	const newImageData = dstCanvas.getContext('2d')
+		.createImageData(
+			dstCanvas.width,
+			dstCanvas.height
+		);
+
+	// ThAW 2018-10-11 : Are these two convolution kernels? What are Sobel operators?
+	const operators1 = [[1,2,1],
+		[0,0,0],
+		[-1,-2,-1]];
+	const operators2 = [[-1,0,1],
+		[-2,0,2],
+		[-1,0,1]];
+
+	for (let y = 0; y < dstCanvas.height; y++) {
+
+		for (let x = 0; x < dstCanvas.width; x++) {
+
+			for (let rgb = 0; rgb <= 3; rgb++) {
+				const a = getPos(x, y, dstCanvas.width)+rgb;
+
+				if (3 === rgb) {
+					newImageData.data[a] = pixels[a];
+					break;
+				}
+
+				const lefttop = getPos(x - 1, y - 1, dstCanvas.width) + rgb;
+				const top = getPos(x, y - 1, dstCanvas.width) + rgb;
+				const righttop = getPos(x + 1, y - 1, dstCanvas.width) + rgb;
+				const left = getPos(x - 1, y, dstCanvas.width) + rgb;
+				const right = getPos(x + 1, y, dstCanvas.width) + rgb;
+				const leftdown = getPos(x - 1, y + 1, dstCanvas.width) + rgb;
+				const down = getPos(x, y + 1, dstCanvas.width) + rgb;
+				const rightdown = getPos(x + 1, y + 1, dstCanvas.width) + rgb;
+
+				pixels[lefttop] = (lefttop < 0 || lefttop > pixels.length) ? 0 : pixels[lefttop];
+				pixels[top] = (top < 0 || top > pixels.length) ? 0 : pixels[top];
+				pixels[righttop] = (righttop < 0 || righttop > pixels.length) ? 0 : pixels[righttop];
+				pixels[left] = (left < 0 || left > pixels.length) ? 0 : pixels[left];
+				pixels[right] = (right < 0 || right > pixels.length) ? 0 : pixels[right];
+				pixels[leftdown] = (leftdown < 0 || leftdown > pixels.length) ? 0 : pixels[leftdown];
+				pixels[down] = (down < 0 || down > pixels.length) ? 0 : pixels[down];
+				pixels[rightdown] = (rightdown < 0 || rightdown > pixels.length) ? 0 : pixels[rightdown];
+				newImageData.data[a] += Math.abs(
+					pixels[lefttop] * operators1[0][0] +
+					pixels[top] * operators1[0][1] +
+					pixels[righttop] * operators1[0][2] +
+					pixels[left] * operators1[1][0] +
+					pixels[a] * operators1[1][1] +
+					pixels[right] * operators1[1][2] +
+					pixels[leftdown] * operators1[2][0] +
+					pixels[down] * operators1[2][1] +
+					pixels[rightdown] * operators1[2][2]);
+				newImageData.data[a] += Math.abs(
+					pixels[lefttop] * operators2[0][0] +
+					pixels[top] * operators2[0][1] +
+					pixels[righttop] * operators2[0][2] +
+					pixels[left] * operators2[1][0] +
+					pixels[a] * operators2[1][1] +
+					pixels[right] * operators2[1][2] +
+					pixels[leftdown] * operators2[2][0] +
+					pixels[down] * operators2[2][1] +
+					pixels[rightdown] * operators2[2][2]);
+				newImageData.data[a] = (255 < newImageData.data[a] ) ? 255 : newImageData.data[a];
+			}
+		}
+	}
+
+	return newImageData;
+}
+
+function getPos (x, y, width) {
+	return ((y * width) + x) * 4;
+}
+*/
+
+function histogramEqualization (srcImage) {
+	const pixels = srcImage.data;
+	const newImageData = imageUtilities.createImage(srcImage.width, srcImage.height, srcImage.bytesPerPixel);
+
+	const countR = new Array(256),
+		countG = new Array(256),
+		countB = new Array(256);
+
+	for (let i = 0; i < 256; i++) {
+		countR[i] = 0;
+		countG[i] = 0;
+		countB[i] = 0;
+	}
+
+	for (let y = 0; y < srcImage.height; y++) {
+
+		for (let x = 0; x < srcImage.width; x++) {
+			const a = (y * srcImage.width + x) * 4;
+
+			countR[pixels[a]]++;
+			countG[pixels[a + 1]]++;
+			countB[pixels[a + 2]]++;
+		}
+	}
+
+	let minR = 256,
+		minG = 256,
+		minB = 256;
+
+	for (let i = 1; i < 256; i++) {
+		countR[i] += countR[i - 1];
+		countG[i] += countG[i - 1];
+		countB[i] += countB[i - 1];
+
+		minR = countR[i] !== 0 && countR[i] < minR ? countR[i] : minR;
+		minG = countG[i] !== 0 && countG[i] < minG ? countG[i] : minG;
+		minB = countB[i] !== 0 && countB[i] < minB ? countB[i] : minB;
+	}
+
+	for (let i = 0; i < 256; i++) {
+		countR[i] = (countR[i] - minR) / (srcImage.width * srcImage.height - minR) * 255;
+		countG[i] = (countG[i] - minG) / (srcImage.width * srcImage.height - minG) * 255;
+		countB[i] = (countB[i] - minB) / (srcImage.width * srcImage.height - minB) * 255;
+	}
+
+	for (let y = 0; y < srcImage.height; y++) {
+
+		for (let x = 0; x < srcImage.width; x++) {
+			const a = (y * srcImage.width + x) * 4;
+
+			newImageData.data[a] = countR[pixels[a]];
+			newImageData.data[a + 1] = countG[pixels[a + 1]];
+			newImageData.data[a + 2] = countB[pixels[a + 2]];
+			newImageData.data[a + 3] = pixels[a + 3];
+		}
+	}
+
+	return newImageData;
+}
+
+const srcImagePath = 'lena-unequalized.jpg';
+const dstImagePath = 'lena-equalized.jpg';
+const srcImage = imageUtilities.loadImageFromJpegFile(srcImagePath);
+const dstImage = histogramEqualization(srcImage);
+
+imageUtilities.saveImageToJpegFile(dstImage, dstImagePath);

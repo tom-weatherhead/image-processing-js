@@ -1,0 +1,64 @@
+// From https://bl.ocks.org/biovisualize/c31c5eb3bf1c5a72bde9
+// See also the article by Chris Viau in Medium:
+// https://medium.com/planet-os/better-color-palettes-with-histogram-equalization-in-d3-js-ea6bff119128
+
+'use strict';
+
+const d3 = require('d3');
+const imageUtilities = require('image-utilities');
+
+function histogramEqualization (srcPath, dstPath) {
+	const srcImage = imageUtilities.loadImageFromJpegFile(srcPath);
+
+	const colorScales = {
+		'linearBlackAndWhite': values => d3.scaleLinear()
+			.domain(d3.extent(values))
+			.range(['#000', '#fff']),
+		'histogramEqualize': values => {
+			const buckets = 100;
+			const quantiles = d3.scaleQuantile()
+				.domain(values)
+				.range(d3.range(buckets))
+				.quantiles();
+
+			const stopCount = quantiles.length;
+			const linearScale = d3.scaleLinear()
+				.domain([0, stopCount - 1])
+				.range([d3.rgb('rgb(0, 0, 0)'), d3.rgb('rgb(255, 255, 255)')]);
+
+			const grayScale = d3.range(stopCount).map(d => linearScale(d));
+
+			return d3.scaleLinear().domain(quantiles).range(grayScale);
+		}
+	};
+
+	const dstImage = imageUtilities.createImage(srcImage.width, srcImage.height, srcImage.bytesPerPixel);
+
+	const rasterData = [];
+
+	for (let j = 0; j < srcImage.data.length / 4; j++) {
+		const brightness = d3.lab(d3.rgb(srcImage.data[j * 4],
+			srcImage.data[j * 4 + 1],
+			srcImage.data[j * 4 + 2])).l;
+
+		rasterData.push(srcImage.data[j * 4] === 0 ? null : brightness);
+	}
+
+	const scale = colorScales.histogramEqualize(rasterData);
+
+	rasterData.forEach((rasterDatum, j) => {
+		const scaledColor = scale(rasterDatum);
+		const color = d3.rgb(scaledColor);
+
+		dstImage.data[j * 4] = color.r;
+		dstImage.data[j * 4 + 1] = color.g;
+		dstImage.data[j * 4 + 2] = color.b;
+		dstImage.data[j * 4 + 3] = 255;
+	});
+
+	imageUtilities.saveImageToJpegFile(dstImage, dstPath);
+}
+
+// img.src = 'https://upload.wikimedia.org/wikipedia/commons/0/08/Unequalized_Hawkes_Bay_NZ.jpg';
+
+histogramEqualization('./Unequalized_Hawkes_Bay_NZ.jpg', './Equalized_Hawkes_Bay_NZ.jpg');
