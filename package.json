@@ -39,10 +39,10 @@
 		"rotate"
 	],
 	"dependencies": {
-		"thaw-image-utilities.js": "file:thaw-image-utilities.js.tgz"
+		"thaw-image-utilities.js": "^0.0.6"
 	},
 	"devDependencies": {
-		"babel-mixin": "file:babel-mixin.tgz",
+		"babel-mixin": "^0.1.0",
 		"jest": "^26.4.0"
 	},
 	"author": "Tom Weatherhead <null@2hrd4u.org> (https://github.com/tom-weatherhead)",
